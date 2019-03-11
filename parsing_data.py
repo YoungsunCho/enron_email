@@ -18,6 +18,11 @@ def parsing(filename,wr):
         if line == '\n':
             break
         if line != '':
+            if line.find(':') == -1:
+                value = dic[key]
+                dic[key] = value + line.strip()
+                continue
+
             # key parsing
             key = line.split(':')[0]
             # print(key)
@@ -25,11 +30,12 @@ def parsing(filename,wr):
             # value parsing
             value = line.replace(key, "")[:-1]
             value = value[1:].lstrip()
+
             # print(value)
-            wr.writerow([key, value])
             dic[key] = value
 
-    print(dic)
+    print(dic.items())
+    wr.writerow(dic.items())
 
     file.close()
 
@@ -40,7 +46,6 @@ def search(dirname,wr):
         # print (full_filename)
         wr.writerow([filename])
         parsing(full_filename,wr)
-
 
 csv_file, wr = open_csv_file()
 search("c:/enron_email/emails/",wr)
