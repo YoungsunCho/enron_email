@@ -10,6 +10,13 @@ def open_csv_file():
 def close_csv_file(csv_file):
     csv_file.close()
 
+def make_new_list(newlist, list, wr, head, content):
+    content = content.strip()
+    newlist.insert(0, head)
+    newlist.insert(0, content)
+    wr.writerow(newlist)
+    del newlist[1] ,newlist[0]
+
 def parsing(filename,wr,header):
     file = open(filename, 'r')
     dic = {}
@@ -37,7 +44,7 @@ def parsing(filename,wr,header):
     list = []
 
     for head in header:
-        if head == "To" or head == "Cc" or head == "Bcc":
+        if head in ('To', 'Cc', 'Bcc'):
             continue
 
         if dic.get(head) != None:
@@ -51,27 +58,17 @@ def parsing(filename,wr,header):
             list.append("")
 
     for head in header:
-        if head == "To" or head == "Cc" or head == "Bcc":
+        if head in ('To', 'Cc', 'Bcc'):
             content = dic.get(head)
             if content != None:
                 if content.find(',') == None:
                     newlist = list
-                    con = content.strip()
-                    newlist.insert(0, head)
-                    newlist.insert(0, content)
-                    wr.writerow(newlist)
-                    del newlist[0]
-                    del newlist[0]
+                    make_new_list(newlist, list, wr, head, content)
                 else :
                     contentlist = content.split(',')
-                    for to in contentlist:
+                    for content in contentlist:
                         newlist = list
-                        to = to.strip()
-                        newlist.insert(0, head)
-                        newlist.insert(0, to)
-                        wr.writerow(newlist)
-                        del newlist[0]
-                        del newlist[0]
+                        make_new_list(newlist, list, wr, head, content)
     file.close()
 
 def search(dirname,wr,header):
